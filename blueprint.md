@@ -1,5 +1,6 @@
 TODO
 1. check the input
+    - no of philos/forks (1), time to die (2), eat (3) and sleep (4)
 2. create a thread out of each filos
 3. let unpaired filos take a fork on right side (n+1) / let paired filos take a fork on left side (n-1)
 4. Those who got fork let them have another fork
@@ -18,11 +19,6 @@ IMPORTANT
 2. If a philo holds on to a fork to long it should drop it
 3. [Add a condition that if philo has not eaten in long time he's the next waiting and does not drop the fork]
 
-
-
-eat, sleep or think only one at a time
-amount of forks is the same as the amount of philosophers
-
 while eating there should be two forks on philos hand; one in both
 when eating is done philo puts forks back on the table and starts to sleep
 After sleeping philo starts to think
@@ -31,6 +27,7 @@ If a philosopher dies the program ends.
 
 Rules
 No global variables
+libft forbidden
 
 input: no_of_philos, time_to_die, time_to_eat, time_to_sleep [bonus: no_of_times_each_philo_needs_to_eat]
 
