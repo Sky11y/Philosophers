@@ -1,39 +1,50 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philosophers_utils.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/11 11:23:07 by jpiensal          #+#    #+#             */
+/*   Updated: 2025/04/11 17:23:54 by jpiensal         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philosophers.h"
 
 int	philo_atoi(char *nbr)
 {
-	int	ret;
-	int	i;
+	int		res;
+	size_t	len;
 
-	i = 0;
-	ret = 0;
-	while (nbr[i])
+	res = 0;
+	len = 0;
+	while (nbr[len])
+		len++;
+	if (len > 10)
+		return (0);
+	while (*nbr)
 	{
-		ret = ret * 10 + (int)(nbr[i] - '0');
-		i++;
+		res = res * 10 + (int)(*nbr - '0');
+		nbr++;
 	}
-	return (ret);
+	return (res);
 }
 
-int	check_input(int argc, char **argv)
+int	philo_error(t_errors n)
 {
-	short	i;
-	short	j;
-
-	i = 1;
-	while (i < argc)
+	if (n == e_input)
 	{
-		if (argv[i][0] == '\0' || argv[i][0] == '0')
-			return (-1);
-		j = 0;
-		while (argv[i][j])
-		{
-			if (argv[i][j] > '9' || argv[i][j] < '0')
-				return (-1);
-			j++;
-		}
-		i++;
+		printf("Invalid input. Give 4 arguments using only positive numbers.\n");
+		printf("Use 'no_of_philos' 'time_to_die' 'time_to_eat' 'time_to_eat'\n");
 	}
-	return (0);
+	else if (n == e_join)
+		printf("Failed to join");
+	else if (n == e_create_master)
+		printf("Failed to create master");
+	else if (n == e_create_philo)
+		printf("Failed to create philosopher");
+	else if (n == e_memory)
+		printf("not enough memory");
+	return (n);
 }
-

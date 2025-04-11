@@ -1,4 +1,13 @@
-TODO
+*TODO*
+1. Make the program work with one philo (philo does the things and they are printed on console with timestamps)
+1.1. Philo takes both of the forks
+1.2. Philo eats
+1.3. Philo sleeps
+1.4. Philo thinks
+2. Add one philo
+2.1. Keep them alive
+2.2. Let other die
+
 1. check the input
     - no of philos/forks (1), time to die (2), eat (3) and sleep (4)
 2. create a thread out of each filos
@@ -16,7 +25,7 @@ after n has eaten he goes to sleep and both forks are available (unlock mutex)
 
 IMPORTANT
 1. asymmetric order where every other gets fork on right and every other fork on left makes sure that at least one philo is eating
-2. If a philo holds on to a fork to long it should drop it
+2. If a philo holds on to a fork too long it should drop it
 3. [Add a condition that if philo has not eaten in long time he's the next waiting and does not drop the fork]
 
 while eating there should be two forks on philos hand; one in both
@@ -25,7 +34,7 @@ After sleeping philo starts to think
 
 If a philosopher dies the program ends.
 
-Rules
+**Rules**
 No global variables
 libft forbidden
 
