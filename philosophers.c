@@ -14,10 +14,11 @@
 
 static int	init_philo(t_philo *philo, t_master *master)
 {
-	philo->philo_id = master->philos;
+	philo->id = master->philo_ids++;
 	philo->time_to_die = master->time_to_die;
 	philo->time_to_eat = master->time_to_eat;
 	philo->time_to_sleep = master->time_to_sleep;
+	philo->is_dead = false;
 	return (0);
 }
 
@@ -32,7 +33,9 @@ void	*create_philo(void *arg)
 		philo_error(e_create_philo);
 		return (NULL);
 	}
+	while (master->is_dead)
+		do_actions(master, &philo);
 	printf("philo successfully created\n");
-	printf("philo values: %d %d %d %d\n", philo.philo_id, philo.time_to_die, philo.time_to_eat, philo.time_to_sleep);
+	printf("philo values: %d %d %d %d\n", philo.id, philo.time_to_die, philo.time_to_eat, philo.time_to_sleep);
 	return (NULL);
 }
