@@ -6,17 +6,17 @@
 #    By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/11 10:34:57 by jpiensal          #+#    #+#              #
-#    Updated: 2025/04/11 17:31:01 by jpiensal         ###   ########.fr        #
+#    Updated: 2025/04/14 17:11:25 by jpiensal         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME		= philosophers
-CFLAGS		= -Werror -Wall -Wextra -g
-#DEBUG_FLAG	= -g
+CFLAGS		= -Werror -Wall -Wextra
 
 OBJ_PATH	= obj/
 SRC			= main.c philosophers_utils.c \
-			  philosophers.c
+			  philosophers.c \
+			  actions.c prints.c
 OBJ			= $(SRC:%.c=$(OBJ_PATH)%.o)
 
 all:		$(NAME)

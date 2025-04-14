@@ -8,6 +8,8 @@
 2.1. Keep them alive
 2.2. Let other die
 
+IF NEED TO HAVE FASTER CODE, USE BITWISE OPERATIONS INSTEAD OF MODULUS AND WHAT NOT
+
 1. check the input
     - no of philos/forks (1), time to die (2), eat (3) and sleep (4)
 2. create a thread out of each filos

@@ -6,7 +6,7 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:27:56 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/04/11 17:37:13 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/04/14 16:49:35 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,44 +38,56 @@ typedef enum
 	e_join,
 	e_lock,
 	e_memory,
+	e_gettime,
+	e_undefined_action,
 } t_errors;
+
+typedef enum
+{
+	e_die,
+	e_eat,
+	e_sleep,
+	e_think,
+} t_action;
 
 typedef struct	s_master
 {
-	uint32_t		total_philos;
-	uint32_t		philo_ids;
-	uint32_t		time_to_die;
-	uint32_t		time_to_eat;
-	uint32_t		time_to_sleep;
-	pthread_mutex_t eat_lock;
-	pthread_mutex_t	sleep_lock;
-	pthread_mutex_t	die_lock;
+	int				total_philos;
+	int				philo_ids;
+	unsigned int	time_to_die;
+	unsigned int	time_to_eat;
+	unsigned int	time_to_sleep;
+	unsigned int	time_to_think;
+	unsigned int	begin_program;
+	pthread_mutex_t print_lock;
 	pthread_mutex_t	*forks;
 	bool			is_dead;
+	bool			error;
 } t_master;
 
 typedef struct s_philo
 {
-	uint32_t	id;
-	int32_t		time_to_die;
-	uint32_t	time_to_eat;
-	uint32_t	time_to_sleep;
+	int				id;
+	unsigned int	wait_forks;
+	unsigned int	got_forks;
 } t_philo;
 
-int		philo_atoi(char *nbr);
-int		philo_error(t_errors n);
-void	*create_philo(void *arg);
+unsigned int	philo_atoi(char *nbr);
+int				philo_error(t_errors n);
+int				philosophers(t_master *master);
+unsigned int	exchange_current_time(void);
 
 /*
  * actions.c
  */
-void	do_actions(t_master *master, t_philo *philo);
+void	release_forks(t_master *master, t_philo *philo);
+void	die(t_master *master, t_philo *philo);
+void	take_forks(t_master *master, t_philo *philo);
 /*
  * prints.c
  */
-void	print_eat(t_master *master, t_philo *philo);
-void	print_sleep(t_master *master, t_philo *philo);
-void	print_dead(t_master *master, t_philo *philo);
+void	print(t_master *master, t_philo *philo, t_action action);
+
 
 
 #endif
