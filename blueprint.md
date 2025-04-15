@@ -9,6 +9,7 @@
 2.2. Let other die
 
 IF NEED TO HAVE FASTER CODE, USE BITWISE OPERATIONS INSTEAD OF MODULUS AND WHAT NOT
+ALSO REMEMBER TO PUT ALL THE CODE IN A DIR CALLED PHILO!!!
 
 1. check the input
     - no of philos/forks (1), time to die (2), eat (3) and sleep (4)
@@ -57,5 +58,17 @@ Rejections:
 - A displayed state message should not be mixed up with another message
 - A message announcing a philospher died should not be displayed no more than 10 ms after the actual death of the philosopher
 - The program should not have data races
+
+Some test cases:
+no die: 3 190 60 60
+no die: 4 405 200 200
+no die: 4 130 60 60
+no die: 5 600 150 150
+no die: 100 410 200 200
+no die: 100 130 60 60
+no die: 101 179 60 60
+die: 2 800 700 90 1
+11 900 150 90
+5 200 800000 200
 
 

@@ -12,45 +12,60 @@
 
 #include "philosophers.h"
 
-
 static int	init_locks(t_master *master)
 {
 	int	i;
 
 	i = 0;
 	if (pthread_mutex_init(&master->print_lock, NULL))
-		return (philo_error(e_lock));
+		return (philo_error(master, e_lock));
+	master->forks = malloc(sizeof(pthread_mutex_t) * (master->total_philos));
+	if (!master->forks)
+		return (philo_error(master, e_memory));
 	while (i < master->total_philos)
 	{
 		if (pthread_mutex_init(&master->forks[i++], NULL))
-			return (philo_error(e_lock));
+			return (philo_error(master, e_lock));
 	}
 	return (0);
 }
 
-static int	init_master(t_master *master, char **argv)
+static int	destroy_locks(t_master *master)
 {
-	int i;
+	int	i;
 
 	i = 0;
+	if (pthread_mutex_destroy(&master->print_lock))
+		return (philo_error(master, e_unlock));
+	while (i < master->total_philos)
+	{
+		if (pthread_mutex_destroy(&master->forks[i++]))
+			return (philo_error(master, e_unlock));
+	}
+	return (0);
+}
+
+static int	init_master(t_master *master, int argc, char **argv)
+{
 	master->total_philos = philo_atoi(*argv++);
+	master->time_to_die = philo_atoi(*argv++);
+	master->time_to_eat = philo_atoi(*argv++);
+	master->time_to_sleep = philo_atoi(*argv++);
+	if (argc == 5)
+		master->times_to_eat = philo_atoi(*argv);
+	else
+		master->times_to_eat = -1;
+	if (!master->total_philos || !master->time_to_die || !master->time_to_eat
+			|| !master->time_to_sleep || !master->times_to_eat)
+		return (philo_error(master, e_create_master));
+	if (master->time_to_eat + master->time_to_sleep > master->time_to_die)
+		master->time_to_think = 0;
+	else
+		master->time_to_think = (master->time_to_die
+		- (master->time_to_eat + master->time_to_sleep)) / 2;
 	master->philo_ids = 1;
 	master->is_dead = false;
 	master->error = false;
-	master->time_to_die = philo_atoi(*argv++);
-	master->time_to_eat = philo_atoi(*argv++);
-	master->time_to_sleep = philo_atoi(*argv);
-	if (!master->total_philos || !master->time_to_die
-			|| !master->time_to_eat || !master->time_to_sleep)
-		return (philo_error(e_create_master));
-	master->time_to_think = (master->time_to_die
-		- (master->time_to_eat + master->time_to_sleep)) / 2;
-	master->forks = malloc(sizeof(pthread_mutex_t) * (master->total_philos));
-	if (!master->forks)
-		return (philo_error(e_memory));
-	master->begin_program = exchange_current_time();
-	if (!master->begin_program)
-		return (philo_error(e_gettime));
 	return (0);
 }
 
@@ -58,7 +73,7 @@ static int	input_check(int	argc, char **argv)
 {
 	size_t	i;
 
-	if (argc != 4)
+	if (argc != 4 && argc != 5)
 		return (1);
 	while (*argv)
 	{
@@ -78,14 +93,26 @@ static int	input_check(int	argc, char **argv)
 int	main(int argc, char **argv)
 {
 	t_master	master;
+	int			exit_status;
 
 	if (input_check(--argc, ++argv))
-		return (philo_error(e_input));
-	if (init_master(&master, argv))
+		return (philo_error(&master, e_input));
+	if (init_master(&master, argc, argv))
 		return (EXIT_FAILURE);
 	if (init_locks(&master))
 		return (EXIT_FAILURE);
-	philosophers(&master);
+	master.begin_program = get_current_time();
+	if (!master.begin_program)
+	{
+		free(master.forks);
+		return (philo_error(&master, e_gettime));
+	}
+	exit_status = philosophers(&master, 0);
+	if (destroy_locks(&master))
+	{
+		free(master.forks);
+		return (EXIT_FAILURE);
+	}
 	free(master.forks);
-	return (0);
+	return (exit_status);
 }

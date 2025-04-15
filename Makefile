@@ -10,7 +10,7 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME		= philosophers
+NAME		= philo
 CFLAGS		= -Werror -Wall -Wextra
 
 OBJ_PATH	= obj/

@@ -9,6 +9,32 @@
 
 #include "philosophers.h"
 
+void	print(t_master *master, t_philo *philo, t_action action)
+{
+	pthread_mutex_lock(&master->print_lock);
+	if (master->is_dead || master->error)
+	{
+		pthread_mutex_unlock(&master->print_lock);
+		return ;
+	}
+	if (action == e_die)
+	{
+		master->is_dead = true;
+		print_dead(master, philo);
+	}
+	else if (action == e_gotfork)
+		print_got_fork(master, philo);
+	else if (action == e_eat)
+		print_eat(master, philo);
+	else if (action == e_sleep)
+		print_sleep(master, philo);
+	else if (action == e_think)
+		print_think(master, philo);
+	else
+		philo_error(master, e_undefined_behaviour);
+	pthread_mutex_unlock(&master->print_lock);
+}
+
 void	release_forks(t_master *master, t_philo *philo)
 {
 	if (philo->id % 2)
@@ -29,9 +55,11 @@ void	release_forks(t_master *master, t_philo *philo)
 		else
 			pthread_mutex_unlock(&master->forks[philo->id]);
 	}
-	philo->wait_forks = exchange_current_time();
-	if (philo->wait_forks)
-		philo_error(e_gettime);
+	philo->wait_forks = get_current_time();
+	if (!philo->wait_forks)
+		philo_error(master, e_gettime);
+	if (philo->eat_count != -1)
+		philo->eat_count--;
 }
 
 void	die(t_master *master, t_philo *philo)
@@ -64,8 +92,8 @@ void	take_forks(t_master *master, t_philo *philo)
 		else
 			pthread_mutex_lock(&master->forks[philo->id]);
 	}
-	philo->got_forks = exchange_current_time();
-	if (philo->got_forks)
-		philo_error(e_gettime);
+	philo->got_forks = get_current_time();
+	if (!philo->got_forks)
+		philo_error(master, e_gettime);
 }
 
