@@ -6,7 +6,7 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:27:56 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/04/23 16:04:29 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/04/25 14:22:47 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,10 +56,12 @@ typedef struct s_master
 	unsigned int	time_to_think;
 	unsigned int	begin_program;
 	struct s_philo	**philo_arr;
+	pthread_mutex_t	init_lock;
 	pthread_mutex_t	print_lock;
 	pthread_mutex_t	*forks;
 	bool			is_dead;
 	bool			error;
+	bool			observe;
 }	t_master;
 
 typedef struct s_philo
@@ -74,8 +76,6 @@ unsigned int	philo_atoi(char *nbr);
 int				philo_error(t_master *master, t_errors n);
 int				philosophers(t_master *master, int count);
 unsigned int	get_current_time(void);
-bool			check_death(t_master *master);
-void			do_action(t_master *master, t_action action);
 
 /*
  * actions.c
@@ -83,8 +83,8 @@ void			do_action(t_master *master, t_action action);
 void			release_forks(t_master *master, t_philo *philo,
 				bool is_left_fork);
 void			die(t_master *master, t_philo *philo);
-int				take_right_fork(t_master *master, t_philo *philo);
-int				take_left_fork(t_master *master, t_philo *philo);
+int				take_first_fork(t_master *master, t_philo *philo);
+int				take_second_fork(t_master *master, t_philo *philo);
 void			print(t_master *master, t_philo *philo, t_action action);
 /*
  * prints.c

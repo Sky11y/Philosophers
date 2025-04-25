@@ -6,7 +6,7 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:23:07 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/04/23 15:36:00 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/04/24 12:22:34 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,31 +74,4 @@ unsigned int	get_current_time(void)
 	ms = (unsigned int)(temp.tv_sec * 1000);
 	ms += (unsigned int)(temp.tv_usec / 1000);
 	return (ms);
-}
-
-bool	check_death(t_master *master)
-{
-	unsigned int	timestamp;
-	int				i;
-
-	if (master->is_dead || master->error)
-		return (true);
-	timestamp = get_current_time();
-	if (!timestamp)
-	{
-		philo_error(master, e_gettime);
-		return (true);
-	}
-	i = 0;
-	while (i < master->total_philos)
-	{
-		if (timestamp - master->philo_arr[i]->eaten >= master->time_to_die
-				&& master->philo_arr[i]->is_eating == false)
-		{
-			die(master, master->philo_arr[i]);
-			master->is_dead = true;
-		}
-		i++;
-	}
-	return (false);
 }
