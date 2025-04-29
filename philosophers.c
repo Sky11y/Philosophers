@@ -6,7 +6,7 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:23:16 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/04/25 16:01:06 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/04/29 15:56:56 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static void	*observer(void *arg)
 	while (master->philo_ids > 1)
 		continue ;
 	i = 0;
-	while (1)
+	while (!master->is_dead && !master->error && !master->is_eaten)
 	{
 		timestamp = get_current_time();
 		if (!timestamp)
@@ -42,7 +42,7 @@ static void	*observer(void *arg)
 			philo_error(master, e_gettime);
 			break ;
 		}
-		if (timestamp - master->philo_arr[i]->eaten >= master->time_to_die
+		if (!master->is_eaten && timestamp - master->philo_arr[i]->eaten >= master->time_to_die
 				&& master->philo_arr[i]->is_eating == false)
 		{
 			print(master, master->philo_arr[i], e_die);
@@ -65,7 +65,10 @@ static void	master_loop(t_master *master, t_philo *philo)
 		usleep(master->time_to_eat * 1000);
 		release_forks(master, philo, true);
 		if (!philo->eat_count || master->is_dead)
+		{
+			master->is_eaten = true;
 			return ;
+		}
 		print(master, philo, e_sleep);
 		if (master->time_to_sleep <= master->time_to_die)
 			usleep(master->time_to_sleep * 1000);

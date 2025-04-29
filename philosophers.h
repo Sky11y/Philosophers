@@ -6,7 +6,7 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:27:56 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/04/25 14:22:47 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/04/29 15:54:52 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ typedef struct s_master
 	pthread_mutex_t	print_lock;
 	pthread_mutex_t	*forks;
 	bool			is_dead;
+	bool			is_eaten;
 	bool			error;
 	bool			observe;
 }	t_master;
