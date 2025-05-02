@@ -6,7 +6,7 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:27:56 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/04/29 15:54:52 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/05/02 17:58:11 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,21 +48,22 @@ typedef enum e_action
 typedef struct s_master
 {
 	int				total_philos;
-	int				philo_ids;
 	int				times_to_eat;
+	int				is_eaten;
+	int				philos_started;
+	int				philos_initialised;
 	unsigned int	time_to_die;
 	unsigned int	time_to_eat;
 	unsigned int	time_to_sleep;
 	unsigned int	time_to_think;
 	unsigned int	begin_program;
 	struct s_philo	**philo_arr;
-	pthread_mutex_t	init_lock;
 	pthread_mutex_t	print_lock;
+	pthread_mutex_t	init_lock;
 	pthread_mutex_t	*forks;
 	bool			is_dead;
-	bool			is_eaten;
 	bool			error;
-	bool			observe;
+	bool			is_finished;
 }	t_master;
 
 typedef struct s_philo
@@ -70,7 +71,6 @@ typedef struct s_philo
 	int				id;
 	int				eat_count;
 	unsigned int	eaten;
-	bool			is_eating;
 }	t_philo;
 
 unsigned int	philo_atoi(char *nbr);
@@ -86,14 +86,14 @@ void			release_forks(t_master *master, t_philo *philo,
 void			die(t_master *master, t_philo *philo);
 int				take_first_fork(t_master *master, t_philo *philo);
 int				take_second_fork(t_master *master, t_philo *philo);
-void			print(t_master *master, t_philo *philo, t_action action);
+void			print(t_master *master, int id, t_action action);
 /*
  * prints.c
  */
-void			print_got_fork(t_master *master, t_philo *philo);
-void			print_dead(t_master *master, t_philo *philo);
-void			print_think(t_master *master, t_philo *philo);
-void			print_sleep(t_master *master, t_philo *philo);
-void			print_eat(t_master *master, t_philo *philo);
+void			print_got_fork(t_master *master, int id);
+void			print_dead(t_master *master, int id);
+void			print_think(t_master *master, int id);
+void			print_sleep(t_master *master, int id);
+void			print_eat(t_master *master, int id);
 
 #endif

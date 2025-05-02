@@ -6,7 +6,7 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:27:43 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/04/29 15:56:34 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/05/02 18:10:28 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,16 +44,14 @@ static int	destroy_locks(t_master *master)
 	while (i < master->total_philos)
 	{
 		if (pthread_mutex_destroy(&master->forks[i++]))
-		{
-			printf("forklock, %d\n", i);
 			return (philo_error(master, e_unlock));
-		}
 	}
 	return (0);
 }
 
 static int	init_master(t_master *master, int argc, char **argv)
 {
+	memset((void *)master, 0, sizeof(master));
 	master->total_philos = philo_atoi(*argv++);
 	master->time_to_die = philo_atoi(*argv++);
 	master->time_to_eat = philo_atoi(*argv++);
@@ -70,16 +68,10 @@ static int	init_master(t_master *master, int argc, char **argv)
 	else
 		master->time_to_think = (master->time_to_die
 				- (master->time_to_eat + master->time_to_sleep)) / 2;
-	master->philo_ids = 1;
 	master->philo_arr = malloc(sizeof(t_philo) * (master->total_philos + 1));
 	if (!master->philo_arr)
 		return (philo_error(master, e_memory));
-	master->philo_arr[master->total_philos] = NULL;
-	master->begin_program = 0;
-	master->is_dead = false;
-	master->is_eaten = false;
-	master->error = false;
-	master->observe = false;
+	master->is_eaten = master->total_philos;
 	return (0);
 }
 
