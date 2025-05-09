@@ -6,7 +6,7 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 13:08:11 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/05/09 17:54:09 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/05/09 18:05:56 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,11 +95,11 @@ int	take_second_fork(t_master *master, t_philo *philo)
 			pthread_mutex_lock(&master->forks[philo->id]);
 	}
 	print(master, philo->id, e_gotfork);
+	philo->eaten = get_current_time(master);
 	if (master->is_dead)
 	{
 		release_forks(master, philo, true);
 		return (1);
 	}
-	philo->eaten = get_current_time(master);
 	return (0);
 }
