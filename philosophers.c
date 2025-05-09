@@ -6,13 +6,13 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:23:16 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/05/05 15:31:37 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/05/09 18:02:23 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-static int	init_philo(t_philo *philo, t_master *master)
+static void	init_philo(t_philo *philo, t_master *master)
 {
 	static int	i = 1;
 
@@ -21,8 +21,8 @@ static int	init_philo(t_philo *philo, t_master *master)
 	philo->eat_count = master->times_to_eat;
 	philo->eaten = 0;
 	master->philo_arr[philo->id - 1] = philo;
+	master->philos_initialised++;
 	pthread_mutex_unlock(&master->init_lock);
-	return (0);
 }
 
 static void	master_loop(t_master *master, t_philo *philo)
@@ -69,6 +69,8 @@ static void	start_routine(t_master *master, t_philo *philo)
 		usleep(master->time_to_think * 1000);
 	}
 	master_loop(master, philo);
+	while (master->is_finished == false)
+		continue ;
 }
 
 void	*start_thread(void *arg)
@@ -77,17 +79,10 @@ void	*start_thread(void *arg)
 	t_philo		philo;
 
 	master = (t_master *)arg;
-	if (init_philo(&philo, master))
-	{
-		philo_error(master, e_create_philo);
-		return (NULL);
-	}
-	master->philos_initialised++;
+	init_philo(&philo, master);
 	while (master->begin_program == 0)
 		continue ;
 	philo.eaten = master->begin_program;
 	start_routine(master, &philo);
-	while (master->is_finished == false)
-		continue ;
 	return (NULL);
 }

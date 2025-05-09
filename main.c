@@ -6,7 +6,7 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:27:43 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/05/05 15:35:50 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/05/09 17:31:57 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ static int	init_master(t_master *master, int argc, char **argv)
 		|| !master->time_to_sleep || !master->times_to_eat)
 		return (philo_error(master, e_create_master));
 	if (master->time_to_eat + master->time_to_sleep > master->time_to_die)
-		master->time_to_think = 0;
+	master->time_to_think = 0;
 	else
 		master->time_to_think = (master->time_to_die
 				- (master->time_to_eat + master->time_to_sleep)) / 2;

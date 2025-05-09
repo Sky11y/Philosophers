@@ -6,32 +6,29 @@
 #    By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/11 10:34:57 by jpiensal          #+#    #+#              #
-#    Updated: 2025/05/05 15:41:29 by jpiensal         ###   ########.fr        #
+#    Updated: 2025/05/09 15:32:43 by jpiensal         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME		= philo
-CFLAGS		= -Werror -Wall -Wextra -g
-
+CFLAGS		= -Werror -Wall -Wextra -I.
 OBJ_PATH	= obj/
 SRC			= main.c philosophers_utils.c \
 			  philosophers.c observer.c \
 			  actions.c prints.c threads.c mutex.c
 OBJ			= $(SRC:%.c=$(OBJ_PATH)%.o)
+HEADER		= ./philosophers.h
 
 all:		$(NAME)
 
-$(NAME):	$(OBJ_PATH) $(OBJ)
+$(NAME):	$(OBJ_PATH) $(OBJ) $(HEADER)
 			cc $(OBJ) -o $(NAME)
 
 $(OBJ):		$(OBJ_PATH)%.o: %.c
-			cc $(CFLAGS) -c $< -o $@ -I.
+			cc $(CFLAGS) -c $< -o $@
 
 $(OBJ_PATH):
 			@mkdir -p $(OBJ_PATH)
-
-#debug:		fclean $(OBJ_PATH)%.o: %.c
-#			cc $(DEBUG_FLAG) -c $< -o $@ -I
 
 clean:
 			@rm -rf $(OBJ_PATH)

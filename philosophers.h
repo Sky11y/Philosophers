@@ -6,7 +6,7 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:27:56 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/05/05 15:45:13 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/05/09 16:47:37 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,8 @@ typedef struct s_master
 {
 	int				total_philos;
 	int				times_to_eat;
-	int				is_eaten;
-	int				philos_started;
+	_Atomic int		is_eaten;
+	_Atomic int		philos_started;
 	int				philos_initialised;
 	unsigned int	time_to_die;
 	unsigned int	time_to_eat;
