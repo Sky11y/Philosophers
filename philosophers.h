@@ -6,7 +6,7 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:27:56 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/05/02 17:58:11 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/05/05 15:45:13 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ typedef struct s_master
 	struct s_philo	**philo_arr;
 	pthread_mutex_t	print_lock;
 	pthread_mutex_t	init_lock;
+	pthread_mutex_t	time_lock;
 	pthread_mutex_t	*forks;
 	bool			is_dead;
 	bool			error;
@@ -73,27 +74,46 @@ typedef struct s_philo
 	unsigned int	eaten;
 }	t_philo;
 
+/*
+ * philosopher_utils.c
+ */
 unsigned int	philo_atoi(char *nbr);
 int				philo_error(t_master *master, t_errors n);
-int				philosophers(t_master *master, int count);
-unsigned int	get_current_time(void);
-
+unsigned int	get_current_time(t_master *master);
+/*
+ * philosophers.c
+ */
+void			*start_thread(void *arg);
+/*
+ * observer.c
+ */
+void			*observer(void *arg);
+/*
+ * mutex.c
+ */
+int				init_locks(t_master *master);
+int				destroy_locks(t_master *master);
 /*
  * actions.c
  */
+void			print(t_master *master, int id, t_action action);
 void			release_forks(t_master *master, t_philo *philo,
-				bool is_left_fork);
+					bool is_left_fork);
 void			die(t_master *master, t_philo *philo);
 int				take_first_fork(t_master *master, t_philo *philo);
 int				take_second_fork(t_master *master, t_philo *philo);
-void			print(t_master *master, int id, t_action action);
 /*
  * prints.c
  */
-void			print_got_fork(t_master *master, int id);
-void			print_dead(t_master *master, int id);
-void			print_think(t_master *master, int id);
-void			print_sleep(t_master *master, int id);
 void			print_eat(t_master *master, int id);
+void			print_sleep(t_master *master, int id);
+void			print_think(t_master *master, int id);
+void			print_dead(t_master *master, int id);
+void			print_got_fork(t_master *master, int id);
+/*
+ * threads.c
+ */
+int				create_threads(t_master *master, pthread_t *philo);
+int				join_threads(t_master *master, pthread_t *philo);
 
 #endif

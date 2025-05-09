@@ -6,46 +6,29 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:27:43 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/05/02 18:10:28 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/05/05 15:35:50 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-static int	init_locks(t_master *master)
+static int	philosophers(t_master *master)
 {
-	int	i;
+	pthread_t	*philo;
 
-	i = 0;
-	if (pthread_mutex_init(&master->print_lock, NULL))
-		return (philo_error(master, e_lock));
-	if (pthread_mutex_init(&master->init_lock, NULL))
-		return (philo_error(master, e_lock));
-	master->forks = malloc(sizeof(pthread_mutex_t) * (master->total_philos));
-	if (!master->forks)
+	philo = malloc(sizeof(pthread_t) * (master->total_philos + 1));
+	if (!philo)
 		return (philo_error(master, e_memory));
-	while (i < master->total_philos)
-	{
-		if (pthread_mutex_init(&master->forks[i++], NULL))
-			return (philo_error(master, e_lock));
-	}
-	return (0);
-}
-
-static int	destroy_locks(t_master *master)
-{
-	int	i;
-
-	i = 0;
-	if (pthread_mutex_destroy(&master->print_lock))
-		return (philo_error(master, e_unlock));
-	if (pthread_mutex_destroy(&master->init_lock))
-		return (philo_error(master, e_unlock));
-	while (i < master->total_philos)
-	{
-		if (pthread_mutex_destroy(&master->forks[i++]))
-			return (philo_error(master, e_unlock));
-	}
+	if (create_threads(master, philo))
+		return (-1);
+	while (master->philos_initialised < master->total_philos)
+		continue ;
+	master->begin_program = get_current_time(master);
+	if (!master->begin_program)
+		return (philo_error(master, e_gettime));
+	if (join_threads(master, philo))
+		return (-1);
+	free(philo);
 	return (0);
 }
 
@@ -107,7 +90,7 @@ int	main(int argc, char **argv)
 		return (EXIT_FAILURE);
 	if (init_locks(&master))
 		return (EXIT_FAILURE);
-	exit_status = philosophers(&master, 0);
+	exit_status = philosophers(&master);
 	if (destroy_locks(&master))
 	{
 		free(master.forks);

@@ -6,7 +6,7 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:23:16 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/05/02 18:12:54 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/05/05 15:31:37 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,42 +23,6 @@ static int	init_philo(t_philo *philo, t_master *master)
 	master->philo_arr[philo->id - 1] = philo;
 	pthread_mutex_unlock(&master->init_lock);
 	return (0);
-}
-
-static void	*observer(void *arg)
-{
-	int				i;
-	unsigned int	timestamp;
-	t_master		*master;
-
-	master = (t_master *)arg;
-	i = 0;
-	while (master->philos_started < master->total_philos - 1)
-		continue ;
-	while (!master->is_dead && !master->error && master->is_eaten)
-	{
-		if (master->philo_arr[i]->eat_count == 0)
-		{
-			if (++i == master->total_philos)
-				i = 0;
-			continue ;
-		}
-		timestamp = get_current_time();
-		if (!timestamp)
-		{
-			philo_error(master, e_gettime);
-			break ;
-		}
-		if (timestamp - master->philo_arr[i]->eaten >= master->time_to_die)
-		{
-			print(master, i + 1, e_die);
-			break ;
-		}
-		if (++i == master->total_philos)
-			i = 0;
-	}
-	master->is_finished = true;
-	return (NULL);
 }
 
 static void	master_loop(t_master *master, t_philo *philo)
@@ -90,7 +54,24 @@ static void	master_loop(t_master *master, t_philo *philo)
 	}
 }
 
-static void	*start_thread(void *arg)
+static void	start_routine(t_master *master, t_philo *philo)
+{
+	if (master->total_philos == 1)
+	{
+		print(master, philo->id, e_gotfork);
+		usleep(master->time_to_die * 1000);
+		print(master, philo->id, e_die);
+		return ;
+	}
+	if (philo->id % 2 == 0 || philo->id == master->total_philos)
+	{
+		print(master, philo->id, e_think);
+		usleep(master->time_to_think * 1000);
+	}
+	master_loop(master, philo);
+}
+
+void	*start_thread(void *arg)
 {
 	t_master	*master;
 	t_philo		philo;
@@ -105,53 +86,8 @@ static void	*start_thread(void *arg)
 	while (master->begin_program == 0)
 		continue ;
 	philo.eaten = master->begin_program;
-	if (master->total_philos == 1)
-	{
-		print(master, philo.id, e_gotfork);
-		usleep(master->time_to_die * 1000);
-		print(master, philo.id, e_die);
-		return (NULL);
-	}
-	if (philo.id % 2 == 0 || philo.id == master->total_philos)
-	{
-		print(master, philo.id, e_think);
-		usleep(master->time_to_think * 1000);
-	}
-	master_loop(master, &philo);
+	start_routine(master, &philo);
 	while (master->is_finished == false)
 		continue ;
 	return (NULL);
-}
-
-int	philosophers(t_master *master, int count)
-{
-	pthread_t	*philo;
-
-	philo = malloc(sizeof(pthread_t) * (master->total_philos + 1));
-	if (!philo)
-		return (philo_error(master, e_memory));
-	while (count < master->total_philos)
-	{
-		if (pthread_create(&philo[count++], NULL, start_thread, (void *)master))
-		{
-			free(philo);
-			return (philo_error(master, e_create_philo));
-		}
-	}
-	pthread_create(&philo[count++], NULL, observer, (void *)master);
-	while (master->philos_initialised < master->total_philos)
-		continue ;
-	master->begin_program = get_current_time();
-	if (!master->begin_program)
-		return (philo_error(master, e_gettime));
-	while (count--)
-	{
-		if (pthread_join(philo[count], NULL))
-		{
-			free(philo);
-			return (philo_error(master, e_join));
-		}
-	}
-	free(philo);
-	return (0);
 }

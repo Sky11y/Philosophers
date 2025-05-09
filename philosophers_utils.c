@@ -6,7 +6,7 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 11:23:07 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/04/24 12:22:34 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/05/05 14:35:17 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,14 +64,16 @@ int	philo_error(t_master *master, t_errors n)
 	return (n);
 }
 
-unsigned int	get_current_time(void)
+unsigned int	get_current_time(t_master *master)
 {
 	unsigned int	ms;
 	struct timeval	temp;
 
+	pthread_mutex_lock(&master->time_lock);
 	if (gettimeofday(&temp, NULL) == -1)
 		return (0);
 	ms = (unsigned int)(temp.tv_sec * 1000);
 	ms += (unsigned int)(temp.tv_usec / 1000);
+	pthread_mutex_unlock(&master->time_lock);
 	return (ms);
 }

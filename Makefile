@@ -6,7 +6,7 @@
 #    By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/11 10:34:57 by jpiensal          #+#    #+#              #
-#    Updated: 2025/04/23 15:11:04 by jpiensal         ###   ########.fr        #
+#    Updated: 2025/05/05 15:41:29 by jpiensal         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,8 +15,8 @@ CFLAGS		= -Werror -Wall -Wextra -g
 
 OBJ_PATH	= obj/
 SRC			= main.c philosophers_utils.c \
-			  philosophers.c \
-			  actions.c prints.c
+			  philosophers.c observer.c \
+			  actions.c prints.c threads.c mutex.c
 OBJ			= $(SRC:%.c=$(OBJ_PATH)%.o)
 
 all:		$(NAME)

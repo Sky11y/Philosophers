@@ -6,7 +6,7 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 13:08:11 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/05/02 17:57:43 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/05/05 13:51:51 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void	release_forks(t_master *master, t_philo *philo, bool has_both_forks)
 		else
 			pthread_mutex_unlock(&master->forks[philo->id]);
 	}
-	philo->eaten = get_current_time();
+	philo->eaten = get_current_time(master);
 	if (!philo->eaten)
 		philo_error(master, e_gettime);
 	if (philo->eat_count != -1)
@@ -112,6 +112,6 @@ int	take_second_fork(t_master *master, t_philo *philo)
 		release_forks(master, philo, true);
 		return (1);
 	}
-	philo->eaten = get_current_time();
+	philo->eaten = get_current_time(master);
 	return (0);
 }
