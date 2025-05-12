@@ -6,7 +6,7 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:27:43 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/05/09 17:31:57 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/05/12 11:35:12 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,6 @@ static int	philosophers(t_master *master)
 		return (philo_error(master, e_memory));
 	if (create_threads(master, philo))
 		return (-1);
-	while (master->philos_initialised < master->total_philos)
-		continue ;
 	master->begin_program = get_current_time(master);
 	if (!master->begin_program)
 		return (philo_error(master, e_gettime));
@@ -30,6 +28,18 @@ static int	philosophers(t_master *master)
 		return (-1);
 	free(philo);
 	return (0);
+}
+
+static t_philo	init_philo(t_master *master)
+{
+	static int	id = 1;
+	t_philo		philo;
+
+	philo.id = id++;
+	philo.eat_count = master->times_to_eat;
+	philo.eaten = 0;
+	philo.is_eating = false;
+	return (philo);
 }
 
 static int	init_master(t_master *master, int argc, char **argv)
@@ -51,7 +61,7 @@ static int	init_master(t_master *master, int argc, char **argv)
 	else
 		master->time_to_think = (master->time_to_die
 				- (master->time_to_eat + master->time_to_sleep)) / 2;
-	master->philo_arr = malloc(sizeof(t_philo) * (master->total_philos + 1));
+	master->philo_arr = malloc(sizeof(t_philo) * (master->total_philos));
 	if (!master->philo_arr)
 		return (philo_error(master, e_memory));
 	master->is_eaten = master->total_philos;
@@ -83,6 +93,7 @@ int	main(int argc, char **argv)
 {
 	t_master	master;
 	int			exit_status;
+	int			i;
 
 	if (input_check(--argc, ++argv))
 		return (philo_error(&master, e_input));
@@ -90,6 +101,9 @@ int	main(int argc, char **argv)
 		return (EXIT_FAILURE);
 	if (init_locks(&master))
 		return (EXIT_FAILURE);
+	i = 0;
+	while (i < master.total_philos)
+		master.philo_arr[i++] = init_philo(&master);
 	exit_status = philosophers(&master);
 	if (destroy_locks(&master))
 	{

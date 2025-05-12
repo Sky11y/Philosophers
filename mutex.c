@@ -6,7 +6,7 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 15:29:04 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/05/05 15:41:56 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/05/12 11:40:19 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,6 @@ int	init_locks(t_master *master)
 
 	i = 0;
 	if (pthread_mutex_init(&master->print_lock, NULL))
-		return (philo_error(master, e_lock));
-	if (pthread_mutex_init(&master->init_lock, NULL))
 		return (philo_error(master, e_lock));
 	if (pthread_mutex_init(&master->time_lock, NULL))
 		return (philo_error(master, e_lock));
@@ -40,8 +38,6 @@ int	destroy_locks(t_master *master)
 
 	i = 0;
 	if (pthread_mutex_destroy(&master->print_lock))
-		return (philo_error(master, e_unlock));
-	if (pthread_mutex_destroy(&master->init_lock))
 		return (philo_error(master, e_unlock));
 	if (pthread_mutex_destroy(&master->time_lock))
 		return (philo_error(master, e_unlock));

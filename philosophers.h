@@ -6,7 +6,7 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:27:56 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/05/09 16:47:37 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/05/12 11:41:26 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,15 +51,13 @@ typedef struct s_master
 	int				times_to_eat;
 	_Atomic int		is_eaten;
 	_Atomic int		philos_started;
-	int				philos_initialised;
 	unsigned int	time_to_die;
 	unsigned int	time_to_eat;
 	unsigned int	time_to_sleep;
 	unsigned int	time_to_think;
 	unsigned int	begin_program;
-	struct s_philo	**philo_arr;
+	struct s_philo	*philo_arr;
 	pthread_mutex_t	print_lock;
-	pthread_mutex_t	init_lock;
 	pthread_mutex_t	time_lock;
 	pthread_mutex_t	*forks;
 	bool			is_dead;
@@ -72,6 +70,7 @@ typedef struct s_philo
 	int				id;
 	int				eat_count;
 	unsigned int	eaten;
+	bool			is_eating;
 }	t_philo;
 
 /*
