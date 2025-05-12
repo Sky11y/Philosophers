@@ -66,17 +66,22 @@ int	philo_error(t_master *master, t_errors n)
 
 unsigned int	get_current_time(t_master *master)
 {
-	unsigned int	ms;
 	struct timeval	temp;
 
-	pthread_mutex_lock(&master->time_lock);
 	if (gettimeofday(&temp, NULL) == -1)
 	{
 		master->error = true;
 		return (0);
 	}
-	ms = (unsigned int)(temp.tv_sec * 1000);
-	ms += (unsigned int)(temp.tv_usec / 1000);
-	pthread_mutex_unlock(&master->time_lock);
-	return (ms);
+	return ((unsigned int)(temp.tv_sec * 1000 + temp.tv_usec / 1000));
+}
+
+int	ft_usleep(t_master *master, unsigned int ms)
+{
+	unsigned int	start;
+
+	start = get_current_time(master);
+	while ((get_current_time(master) - start) < ms)
+		usleep(500);
+	return (0);
 }

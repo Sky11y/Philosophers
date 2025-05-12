@@ -44,7 +44,6 @@ static t_philo	init_philo(t_master *master)
 
 static int	init_master(t_master *master, int argc, char **argv)
 {
-	memset((void *)master, 0, sizeof(master));
 	master->total_philos = philo_atoi(*argv++);
 	master->time_to_die = philo_atoi(*argv++);
 	master->time_to_eat = philo_atoi(*argv++);
@@ -56,15 +55,15 @@ static int	init_master(t_master *master, int argc, char **argv)
 	if (!master->total_philos || !master->time_to_die || !master->time_to_eat
 		|| !master->time_to_sleep || !master->times_to_eat)
 		return (philo_error(master, e_create_master));
-	if (master->time_to_eat + master->time_to_sleep > master->time_to_die)
-	master->time_to_think = 0;
-	else
-		master->time_to_think = (master->time_to_die
-				- (master->time_to_eat + master->time_to_sleep)) / 2;
 	master->philo_arr = malloc(sizeof(t_philo) * (master->total_philos));
 	if (!master->philo_arr)
 		return (philo_error(master, e_memory));
 	master->is_eaten = master->total_philos;
+	master->philos_started = 0;
+	master->is_dead = false;
+	master->error = false;
+	master->is_finished = false;
+	master->begin_program = 0;
 	return (0);
 }
 

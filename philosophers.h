@@ -54,7 +54,6 @@ typedef struct s_master
 	unsigned int	time_to_die;
 	unsigned int	time_to_eat;
 	unsigned int	time_to_sleep;
-	unsigned int	time_to_think;
 	unsigned int	begin_program;
 	struct s_philo	*philo_arr;
 	pthread_mutex_t	print_lock;
@@ -79,6 +78,7 @@ typedef struct s_philo
 unsigned int	philo_atoi(char *nbr);
 int				philo_error(t_master *master, t_errors n);
 unsigned int	get_current_time(t_master *master);
+int				ft_usleep(t_master *master, unsigned int ms);
 /*
  * philosophers.c
  */

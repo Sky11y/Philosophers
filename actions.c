@@ -75,12 +75,12 @@ int	take_first_fork(t_master *master, t_philo *philo)
 	}
 	else
 		pthread_mutex_lock(&master->forks[philo->id - 1]);
-	print(master, philo->id, e_gotfork);
-	if (master->is_dead)
+	if (master->is_dead || master->error || master->is_finished)
 	{
 		release_forks(master, philo, false);
 		return (1);
 	}
+	print(master, philo->id, e_gotfork);
 	return (0);
 }
 
@@ -95,13 +95,12 @@ int	take_second_fork(t_master *master, t_philo *philo)
 		else
 			pthread_mutex_lock(&master->forks[philo->id]);
 	}
-	print(master, philo->id, e_gotfork);
-	philo->eaten = get_current_time(master);
 	philo->is_eating = true;
-	if (master->is_dead)
+	if (master->is_dead || master->error || master->is_finished)
 	{
 		release_forks(master, philo, true);
 		return (1);
 	}
+	print(master, philo->id, e_gotfork);
 	return (0);
 }
