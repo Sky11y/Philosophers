@@ -6,7 +6,7 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:27:56 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/05/13 13:05:30 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/05/13 15:09:44 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,11 +68,11 @@ typedef struct s_philo
 {
 	struct s_master	*data;
 	pthread_t		thread;
-	_Atomic int				id;
+	int				id;
 	int				r_fork;
 	int				l_fork;
-	_Atomic int				eat_count;
-	_Atomic unsigned int	eaten;
+	int				eat_count;
+	unsigned int	eaten;
 	unsigned int	time_to_die;
 	unsigned int	time_to_eat;
 	unsigned int	time_to_sleep;
@@ -82,8 +82,6 @@ typedef struct s_philo
 /*
  * init.c
  */
-pthread_mutex_t	left_fork(t_master *master, int id);
-pthread_mutex_t	right_fork(t_master *master, int id);
 t_philo	init_philo(t_master *master);
 int	init_master(t_master *master, int argc, char **argv);
 /*
@@ -100,7 +98,7 @@ void			*start_thread(void *arg);
 /*
  * observer.c
  */
-void			*observer(void *arg);
+void			*observe(void *arg);
 /*
  * mutex.c
  */
@@ -112,9 +110,9 @@ int				destroy_locks(t_master *master);
 void			print(t_master *master, int id, t_action action);
 void			release_forks(t_master *master, t_philo *philo,
 					bool is_left_fork);
-void			die(t_master *master, t_philo *philo);
 int				take_first_fork(t_master *master, t_philo *philo);
 int				take_second_fork(t_master *master, t_philo *philo);
+int				eat(t_master *master, t_philo *philo);
 /*
  * prints.c
  */

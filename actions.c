@@ -6,7 +6,7 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 13:08:11 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/05/13 13:14:51 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/05/13 13:41:18 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	print(t_master *master, int id, t_action action)
 {
 	pthread_mutex_lock(&master->print_lock);
-	if (master->is_dead || master->error)
+	if (master->is_dead || master->error || master->is_finished)
 	{
 		pthread_mutex_unlock(&master->print_lock);
 		return ;
@@ -51,9 +51,6 @@ void	release_forks(t_master *master, t_philo *philo, bool has_both_forks)
 	pthread_mutex_lock(&master->time_lock);
 	philo->eaten = get_current_time(master);
 	pthread_mutex_unlock(&master->time_lock);
-	philo->is_eating = false;
-	if (philo->eat_count != -1)
-		philo->eat_count--;
 }
 
 int	take_first_fork(t_master *master, t_philo *philo)
@@ -73,7 +70,7 @@ int	take_first_fork(t_master *master, t_philo *philo)
 
 int	take_second_fork(t_master *master, t_philo *philo)
 {
-	if (philo->id % 2)
+	if (philo->id % 2 && philo->id != master->total_philos)
 		pthread_mutex_lock(&master->forks[philo->l_fork]);
 	else
 		pthread_mutex_lock(&master->forks[philo->r_fork]);
@@ -84,4 +81,16 @@ int	take_second_fork(t_master *master, t_philo *philo)
 	}
 	print(master, philo->id, e_gotfork);
 	return (0);
+}
+
+int eat(t_master *master, t_philo *philo)
+{
+	philo->is_eating = true;
+	print(master, philo->id, e_eat);
+	ft_usleep(master, philo->time_to_eat);
+	release_forks(master, philo, true);
+	philo->is_eating = false;
+	if (philo->eat_count != -1)
+		philo->eat_count--;
+	return (philo->eat_count);
 }

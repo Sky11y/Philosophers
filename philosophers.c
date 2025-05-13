@@ -6,7 +6,7 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:23:16 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/05/13 13:07:11 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/05/13 15:12:48 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,25 +18,21 @@ static void	master_loop(t_master *master, t_philo *philo)
 	while (!master->is_dead && !master->error && !master->is_finished)
 	{
 		if (take_first_fork(master, philo) || take_second_fork(master, philo))
-			break ;
-		philo->is_eating = true;
-		print(master, philo->id, e_eat);
-		ft_usleep(master, philo->time_to_eat);
-		release_forks(master, philo, true);
-		if (master->is_dead == true)
 			return ;
-		if (philo->eat_count == 0)
+		if (eat(master, philo) == 0)
 		{
-			master->is_eaten -= 1;
+		//	master->is_eaten -= 1;
 			return ;
 		}
+		if (master->is_dead || master->error)
+			return ;
 		print(master, philo->id, e_sleep);
 		if (philo->time_to_sleep <= philo->time_to_die)
 			ft_usleep(master, philo->time_to_sleep);
 		else
 		{
 			ft_usleep(master, philo->time_to_die);
-			break ;
+			return ;
 		}
 		print(master, philo->id, e_think);
 	}
@@ -44,6 +40,8 @@ static void	master_loop(t_master *master, t_philo *philo)
 
 static void	start_routine(t_master *master, t_philo *philo)
 {
+	pthread_t	self_observe;
+
 	philo->eaten = master->begin_program;
 	if (master->total_philos == 1)
 	{
@@ -52,11 +50,13 @@ static void	start_routine(t_master *master, t_philo *philo)
 		print(master, philo->id, e_die);
 		return ;
 	}
-	master->philos_started++;
+	pthread_create(&self_observe, NULL, observe, (void *)philo);
+	//master->philos_started++;
 	if (philo->id % 2 == 0 || philo->id == master->total_philos)
 		print(master, philo->id, e_think);
 	master_loop(master, philo);
-	philo->is_eating = true;
+	//philo->is_eating = true;
+	pthread_join(self_observe, NULL);
 	while (master->is_finished == false)
 		continue ;
 }
