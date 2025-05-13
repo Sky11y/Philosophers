@@ -6,7 +6,7 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:23:16 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/05/13 12:42:24 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/05/13 13:07:11 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,12 +63,11 @@ static void	start_routine(t_master *master, t_philo *philo)
 
 void	*start_thread(void *arg)
 {
-	t_master			*master;
-	static _Atomic int	i = 0;
+	t_philo				*philo;
 
-	master = (t_master *)arg;
-	while (master->begin_program == 0)
+	philo = (t_philo *)arg;
+	while (philo->data->begin_program == 0)
 		continue ;
-	start_routine(master, &master->philo_arr[i++]);
+	start_routine(philo->data, philo);
 	return (NULL);
 }

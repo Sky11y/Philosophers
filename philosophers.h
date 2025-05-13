@@ -6,7 +6,7 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:27:56 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/05/13 12:41:51 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/05/13 13:05:30 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,11 +68,11 @@ typedef struct s_philo
 {
 	struct s_master	*data;
 	pthread_t		thread;
-	int				l_fork;
+	_Atomic int				id;
 	int				r_fork;
-	int				id;
-	_Atomic int		eat_count;
-	unsigned int	eaten;
+	int				l_fork;
+	_Atomic int				eat_count;
+	_Atomic unsigned int	eaten;
 	unsigned int	time_to_die;
 	unsigned int	time_to_eat;
 	unsigned int	time_to_sleep;

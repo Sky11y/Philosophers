@@ -6,7 +6,7 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 13:08:11 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/05/13 12:45:10 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/05/13 13:14:51 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	release_forks(t_master *master, t_philo *philo, bool has_both_forks)
 		pthread_mutex_unlock(&master->forks[philo->r_fork]);
 	else
 		pthread_mutex_unlock(&master->forks[philo->l_fork]);
-	if (philo->id % 2 && has_both_forks)
+	if (philo->id % 2 && philo->id != master->total_philos && has_both_forks)
 		pthread_mutex_unlock(&master->forks[philo->l_fork]);
 	else if (has_both_forks)
 		pthread_mutex_unlock(&master->forks[philo->r_fork]);

@@ -6,7 +6,7 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 15:26:54 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/05/13 11:18:38 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/05/13 12:58:25 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	*observer(void *arg)
 	t_master		*master;
 
 	master = (t_master *)arg;
-	while (master->philos_started < master->total_philos - 1)
+	while (master->philos_started < master->total_philos)
 		continue ;
 	observe_loop(master, 0, 0);
 	master->is_finished = true;
