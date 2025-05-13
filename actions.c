@@ -6,7 +6,7 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 13:08:11 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/05/12 11:13:56 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/05/13 12:45:10 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,25 +40,17 @@ void	print(t_master *master, int id, t_action action)
 
 void	release_forks(t_master *master, t_philo *philo, bool has_both_forks)
 {
-	if (philo->id % 2)
-	{
-		if (philo->id == master->total_philos)
-			pthread_mutex_unlock(&master->forks[0]);
-		else
-			pthread_mutex_unlock(&master->forks[philo->id]);
-	}
+	if (philo->id % 2 && philo->id != master->total_philos)
+		pthread_mutex_unlock(&master->forks[philo->r_fork]);
 	else
-		pthread_mutex_unlock(&master->forks[philo->id - 1]);
+		pthread_mutex_unlock(&master->forks[philo->l_fork]);
 	if (philo->id % 2 && has_both_forks)
-		pthread_mutex_unlock(&master->forks[philo->id - 1]);
+		pthread_mutex_unlock(&master->forks[philo->l_fork]);
 	else if (has_both_forks)
-	{
-		if (philo->id == master->total_philos)
-			pthread_mutex_unlock(&master->forks[0]);
-		else
-			pthread_mutex_unlock(&master->forks[philo->id]);
-	}
+		pthread_mutex_unlock(&master->forks[philo->r_fork]);
+	pthread_mutex_lock(&master->time_lock);
 	philo->eaten = get_current_time(master);
+	pthread_mutex_unlock(&master->time_lock);
 	philo->is_eating = false;
 	if (philo->eat_count != -1)
 		philo->eat_count--;
@@ -66,15 +58,10 @@ void	release_forks(t_master *master, t_philo *philo, bool has_both_forks)
 
 int	take_first_fork(t_master *master, t_philo *philo)
 {
-	if (philo->id % 2)
-	{
-		if (philo->id == master->total_philos)
-			pthread_mutex_lock(&master->forks[0]);
-		else
-			pthread_mutex_lock(&master->forks[philo->id]);
-	}
+	if (philo->id % 2 && philo->id != master->total_philos)
+		pthread_mutex_lock(&master->forks[philo->r_fork]);
 	else
-		pthread_mutex_lock(&master->forks[philo->id - 1]);
+		pthread_mutex_lock(&master->forks[philo->l_fork]);
 	if (master->is_dead || master->error || master->is_finished)
 	{
 		release_forks(master, philo, false);
@@ -87,15 +74,9 @@ int	take_first_fork(t_master *master, t_philo *philo)
 int	take_second_fork(t_master *master, t_philo *philo)
 {
 	if (philo->id % 2)
-		pthread_mutex_lock(&master->forks[philo->id - 1]);
+		pthread_mutex_lock(&master->forks[philo->l_fork]);
 	else
-	{
-		if (philo->id == master->total_philos)
-			pthread_mutex_lock(&master->forks[0]);
-		else
-			pthread_mutex_lock(&master->forks[philo->id]);
-	}
-	philo->is_eating = true;
+		pthread_mutex_lock(&master->forks[philo->r_fork]);
 	if (master->is_dead || master->error || master->is_finished)
 	{
 		release_forks(master, philo, true);

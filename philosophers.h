@@ -6,7 +6,7 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:27:56 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/05/12 11:41:26 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/05/13 12:41:51 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,12 +66,26 @@ typedef struct s_master
 
 typedef struct s_philo
 {
+	struct s_master	*data;
+	pthread_t		thread;
+	int				l_fork;
+	int				r_fork;
 	int				id;
-	int				eat_count;
+	_Atomic int		eat_count;
 	unsigned int	eaten;
+	unsigned int	time_to_die;
+	unsigned int	time_to_eat;
+	unsigned int	time_to_sleep;
 	bool			is_eating;
 }	t_philo;
 
+/*
+ * init.c
+ */
+pthread_mutex_t	left_fork(t_master *master, int id);
+pthread_mutex_t	right_fork(t_master *master, int id);
+t_philo	init_philo(t_master *master);
+int	init_master(t_master *master, int argc, char **argv);
 /*
  * philosopher_utils.c
  */
@@ -112,7 +126,7 @@ void			print_got_fork(t_master *master, int id);
 /*
  * threads.c
  */
-int				create_threads(t_master *master, pthread_t *philo);
-int				join_threads(t_master *master, pthread_t *philo);
+int				create_threads(t_master *master);
+//int				join_threads(t_master *master, pthread_t *philo);
 
 #endif

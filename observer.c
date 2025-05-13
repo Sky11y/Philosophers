@@ -6,7 +6,7 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 15:26:54 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/05/12 11:26:26 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/05/13 11:18:38 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,9 @@ static void	observe_loop(t_master *master, unsigned int timestamp, int i)
 				i = 0;
 			continue ;
 		}
+		pthread_mutex_lock(&master->time_lock);
 		timestamp = get_current_time(master);
+		pthread_mutex_unlock(&master->time_lock);
 		if (!timestamp)
 			break ;
 		else if (master->philo_arr[i].is_eating == false && \
@@ -41,7 +43,7 @@ void	*observer(void *arg)
 	t_master		*master;
 
 	master = (t_master *)arg;
-	while (master->philos_started < master->total_philos)
+	while (master->philos_started < master->total_philos - 1)
 		continue ;
 	observe_loop(master, 0, 0);
 	master->is_finished = true;
