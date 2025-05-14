@@ -6,7 +6,7 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:27:56 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/05/13 15:09:44 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/05/14 11:28:55 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,21 +47,21 @@ typedef enum e_action
 
 typedef struct s_master
 {
-	int				total_philos;
-	int				times_to_eat;
-	_Atomic int		is_eaten;
-	_Atomic int		philos_started;
-	unsigned int	time_to_die;
-	unsigned int	time_to_eat;
-	unsigned int	time_to_sleep;
-	unsigned int	begin_program;
-	struct s_philo	*philo_arr;
-	pthread_mutex_t	print_lock;
-	pthread_mutex_t	time_lock;
-	pthread_mutex_t	*forks;
-	bool			is_dead;
-	bool			error;
-	bool			is_finished;
+	int						total_philos;
+	int						times_to_eat;
+	_Atomic int				is_eaten;
+	_Atomic int				philos_started;
+	_Atomic unsigned int	time_to_die;
+	_Atomic unsigned int	time_to_eat;
+	_Atomic unsigned int	time_to_sleep;
+	_Atomic unsigned int	time_to_think;
+	_Atomic unsigned int	begin_program;
+	struct s_philo			*philo_arr;
+	pthread_mutex_t			print_lock;
+	pthread_mutex_t			time_lock;
+	pthread_mutex_t			*forks;
+	_Atomic bool			is_dead;
+	_Atomic bool			error;
 }	t_master;
 
 typedef struct s_philo
@@ -73,17 +73,14 @@ typedef struct s_philo
 	int				l_fork;
 	int				eat_count;
 	unsigned int	eaten;
-	unsigned int	time_to_die;
-	unsigned int	time_to_eat;
-	unsigned int	time_to_sleep;
-	bool			is_eating;
+	_Atomic bool	is_eating;
 }	t_philo;
 
 /*
  * init.c
  */
-t_philo	init_philo(t_master *master);
-int	init_master(t_master *master, int argc, char **argv);
+t_philo			init_philo(t_master *master);
+int				init_master(t_master *master, int argc, char **argv);
 /*
  * philosopher_utils.c
  */
@@ -98,7 +95,7 @@ void			*start_thread(void *arg);
 /*
  * observer.c
  */
-void			*observe(void *arg);
+void			*observer(void *arg);
 /*
  * mutex.c
  */
@@ -125,6 +122,5 @@ void			print_got_fork(t_master *master, int id);
  * threads.c
  */
 int				create_threads(t_master *master);
-//int				join_threads(t_master *master, pthread_t *philo);
 
 #endif

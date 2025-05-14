@@ -6,7 +6,7 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 13:08:11 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/05/13 13:41:18 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/05/14 11:25:43 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	print(t_master *master, int id, t_action action)
 {
 	pthread_mutex_lock(&master->print_lock);
-	if (master->is_dead || master->error || master->is_finished)
+	if (master->is_dead || master->error)
 	{
 		pthread_mutex_unlock(&master->print_lock);
 		return ;
@@ -59,7 +59,7 @@ int	take_first_fork(t_master *master, t_philo *philo)
 		pthread_mutex_lock(&master->forks[philo->r_fork]);
 	else
 		pthread_mutex_lock(&master->forks[philo->l_fork]);
-	if (master->is_dead || master->error || master->is_finished)
+	if (master->is_dead || master->error)
 	{
 		release_forks(master, philo, false);
 		return (1);
@@ -74,7 +74,7 @@ int	take_second_fork(t_master *master, t_philo *philo)
 		pthread_mutex_lock(&master->forks[philo->l_fork]);
 	else
 		pthread_mutex_lock(&master->forks[philo->r_fork]);
-	if (master->is_dead || master->error || master->is_finished)
+	if (master->is_dead || master->error)
 	{
 		release_forks(master, philo, true);
 		return (1);
@@ -83,11 +83,11 @@ int	take_second_fork(t_master *master, t_philo *philo)
 	return (0);
 }
 
-int eat(t_master *master, t_philo *philo)
+int	eat(t_master *master, t_philo *philo)
 {
 	philo->is_eating = true;
 	print(master, philo->id, e_eat);
-	ft_usleep(master, philo->time_to_eat);
+	ft_usleep(master, master->time_to_eat);
 	release_forks(master, philo, true);
 	philo->is_eating = false;
 	if (philo->eat_count != -1)

@@ -6,7 +6,7 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 11:50:58 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/05/13 13:08:58 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/05/14 11:28:49 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,25 @@ t_philo	init_philo(t_master *master)
 	philo.l_fork = philo.id - 1;
 	philo.eat_count = master->times_to_eat;
 	philo.eaten = 0;
-	philo.time_to_die = master->time_to_die;
-	philo.time_to_eat = master->time_to_eat;
-	philo.time_to_sleep = master->time_to_sleep;
 	philo.is_eating = false;
 	return (philo);
+}
+
+static int	init_thinking_time(t_master *data)
+{
+	if (data->total_philos == 0)
+		return (1);
+	if (data->time_to_die == 0)
+		return (1);
+	if (data->time_to_eat == 0)
+		return (1);
+	if (data->time_to_sleep == 0)
+		return (1);
+	if (data->time_to_sleep < data->time_to_die)
+		data->time_to_think = (data->time_to_die - data->time_to_sleep) / 2;
+	else
+		data->time_to_think = 0;
+	return (0);
 }
 
 int	init_master(t_master *master, int argc, char **argv)
@@ -44,8 +58,7 @@ int	init_master(t_master *master, int argc, char **argv)
 		master->times_to_eat = philo_atoi(*argv);
 	else
 		master->times_to_eat = -1;
-	if (!master->total_philos || !master->time_to_die || !master->time_to_eat
-		|| !master->time_to_sleep || !master->times_to_eat)
+	if (init_thinking_time(master))
 		return (philo_error(master, e_create_master));
 	master->philo_arr = malloc(sizeof(t_philo) * (master->total_philos));
 	if (!master->philo_arr)
@@ -54,7 +67,6 @@ int	init_master(t_master *master, int argc, char **argv)
 	master->philos_started = 0;
 	master->is_dead = false;
 	master->error = false;
-	master->is_finished = false;
 	master->begin_program = 0;
 	return (0);
 }

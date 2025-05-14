@@ -6,7 +6,7 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:27:43 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/05/13 12:03:52 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/05/14 11:17:18 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ static int	philosophers(t_master *master)
 		return (-1);
 	return (0);
 }
-
 
 static int	input_check(int argc, char **argv)
 {

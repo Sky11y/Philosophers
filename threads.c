@@ -6,7 +6,7 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 14:04:04 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/05/13 15:01:42 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/05/14 11:17:37 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,15 @@
 int	create_threads(t_master *master)
 {
 	int			count;
-	/*pthread_t	observe_thread;
+	pthread_t	observe_thread;
 
 	if (pthread_create(&observe_thread, NULL, observer, (void *)master))
 		return (philo_error(master, e_create_philo));
-	*/
 	count = 0;
 	while (count < master->total_philos)
 	{
 		if (pthread_create(&master->philo_arr[count].thread, NULL,
-					start_thread, (void *)&master->philo_arr[count]))
+				start_thread, (void *)&master->philo_arr[count]))
 			return (philo_error(master, e_create_philo));
 		count++;
 	}
@@ -34,7 +33,7 @@ int	create_threads(t_master *master)
 		if (pthread_join(master->philo_arr[count].thread, NULL))
 			return (philo_error(master, e_join));
 	}
-	//if (pthread_join(observe_thread, NULL))
-	//	return (philo_error(master, e_join));
+	if (pthread_join(observe_thread, NULL))
+		return (philo_error(master, e_join));
 	return (0);
 }
