@@ -6,7 +6,7 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 14:04:04 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/05/14 11:17:37 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/05/26 13:06:45 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,16 @@ int	create_threads(t_master *master)
 	pthread_t	observe_thread;
 
 	if (pthread_create(&observe_thread, NULL, observer, (void *)master))
-		return (philo_error(master, e_create_philo));
+		return (philo_error(master, e_create_observer));
 	count = 0;
 	while (count < master->total_philos)
 	{
 		if (pthread_create(&master->philo_arr[count].thread, NULL,
 				start_thread, (void *)&master->philo_arr[count]))
-			return (philo_error(master, e_create_philo));
+		{
+			philo_error(master, e_create_philo);
+			break ;
+		}
 		count++;
 	}
 	master->begin_program = get_current_time(master);

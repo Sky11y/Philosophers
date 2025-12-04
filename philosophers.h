@@ -6,7 +6,7 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 10:27:56 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/05/14 11:28:55 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/05/26 12:41:37 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,18 @@
 # include <unistd.h>
 # include <sys/time.h>
 # include <pthread.h>
-# include <string.h>
 # include <stdint.h>
 # include <stdbool.h>
+
+# define INPUT "Invalid input\n"
+# define CREATE_PHILO "Failed to create a philosopher\n"
+# define CREATE_OBS "Failed to create observer\n"
+# define MEMORY "Not enough memory\n"
+# define JOIN "Failed to join threads\n"
+# define LOCK "Failed to initialize mutex_lock\n"
+# define UNLOCK "Failed to destroy mutex lock\n"
+# define TIME "Failed to fetch current time\n"
+# define UB "Undefined behaviour\n"
 
 typedef enum e_errors
 {
@@ -28,6 +37,7 @@ typedef enum e_errors
 	e_input,
 	e_create_master,
 	e_create_philo,
+	e_create_observer,
 	e_memory,
 	e_join,
 	e_lock,
@@ -66,14 +76,14 @@ typedef struct s_master
 
 typedef struct s_philo
 {
-	struct s_master	*data;
-	pthread_t		thread;
-	int				id;
-	int				r_fork;
-	int				l_fork;
-	int				eat_count;
-	unsigned int	eaten;
-	_Atomic bool	is_eating;
+	struct s_master			*data;
+	pthread_t				thread;
+	pthread_mutex_t			self_lock;
+	int						id;
+	int						r_fork;
+	int						l_fork;
+	int						eat_count;
+	_Atomic unsigned int	eaten;
 }	t_philo;
 
 /*
@@ -99,7 +109,7 @@ void			*observer(void *arg);
 /*
  * mutex.c
  */
-int				init_locks(t_master *master);
+int				init_locks(t_master *master, int i);
 int				destroy_locks(t_master *master);
 /*
  * actions.c

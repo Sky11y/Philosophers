@@ -6,7 +6,7 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:23:16 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/05/14 11:25:15 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/05/26 12:48:30 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ static void	start_routine(t_master *master, t_philo *philo)
 		ft_usleep(master, master->time_to_think);
 	}
 	master_loop(master, philo);
-	philo->is_eating = true;
 }
 
 void	*start_thread(void *arg)
@@ -63,8 +62,9 @@ void	*start_thread(void *arg)
 	t_philo				*philo;
 
 	philo = (t_philo *)arg;
-	while (philo->data->begin_program == 0)
+	while (philo->data->begin_program == 0 && philo->data->error == false)
 		continue ;
-	start_routine(philo->data, philo);
+	if (philo->data->error == false)
+		start_routine(philo->data, philo);
 	return (NULL);
 }

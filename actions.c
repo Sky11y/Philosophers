@@ -6,7 +6,7 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 13:08:11 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/05/14 11:25:43 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/05/20 12:33:57 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,6 @@ void	release_forks(t_master *master, t_philo *philo, bool has_both_forks)
 		pthread_mutex_unlock(&master->forks[philo->l_fork]);
 	else if (has_both_forks)
 		pthread_mutex_unlock(&master->forks[philo->r_fork]);
-	pthread_mutex_lock(&master->time_lock);
-	philo->eaten = get_current_time(master);
-	pthread_mutex_unlock(&master->time_lock);
 }
 
 int	take_first_fork(t_master *master, t_philo *philo)
@@ -85,12 +82,15 @@ int	take_second_fork(t_master *master, t_philo *philo)
 
 int	eat(t_master *master, t_philo *philo)
 {
-	philo->is_eating = true;
+	pthread_mutex_lock(&master->time_lock);
+	philo->eaten = get_current_time(master);
+	pthread_mutex_unlock(&master->time_lock);
 	print(master, philo->id, e_eat);
 	ft_usleep(master, master->time_to_eat);
 	release_forks(master, philo, true);
-	philo->is_eating = false;
+	pthread_mutex_lock(&philo->self_lock);
 	if (philo->eat_count != -1)
 		philo->eat_count--;
+	pthread_mutex_unlock(&philo->self_lock);
 	return (philo->eat_count);
 }

@@ -6,12 +6,12 @@
 #    By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/11 10:34:57 by jpiensal          #+#    #+#              #
-#    Updated: 2025/05/13 12:04:37 by jpiensal         ###   ########.fr        #
+#    Updated: 2025/05/26 10:46:02 by jpiensal         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME		= philo
-CFLAGS		= -Werror -Wall -Wextra -I.
+CFLAGS		= -Werror -Wall -Wextra
 OBJ_PATH	= obj/
 SRC			= main.c philosophers_utils.c init.c \
 			  philosophers.c observer.c \

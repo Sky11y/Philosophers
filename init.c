@@ -6,7 +6,7 @@
 /*   By: jpiensal <jpiensal@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 11:50:58 by jpiensal          #+#    #+#             */
-/*   Updated: 2025/05/14 11:28:49 by jpiensal         ###   ########.fr       */
+/*   Updated: 2025/05/20 12:40:47 by jpiensal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ t_philo	init_philo(t_master *master)
 	philo.l_fork = philo.id - 1;
 	philo.eat_count = master->times_to_eat;
 	philo.eaten = 0;
-	philo.is_eating = false;
 	return (philo);
 }
 
@@ -41,8 +40,13 @@ static int	init_thinking_time(t_master *data)
 		return (1);
 	if (data->time_to_sleep == 0)
 		return (1);
-	if (data->time_to_sleep < data->time_to_die)
-		data->time_to_think = (data->time_to_die - data->time_to_sleep) / 2;
+	if (data->times_to_eat == 0)
+		return (1);
+	if (data->time_to_sleep + data->time_to_eat < data->time_to_die)
+	{
+		data->time_to_think = (data->time_to_die
+				- (data->time_to_sleep + data->time_to_eat)) / 2;
+	}
 	else
 		data->time_to_think = 0;
 	return (0);
